@@ -38,7 +38,7 @@
       "listen_port": 61801,
       "sniff": true,
       "sniff_override_destination": true,
-      "users": [{ "password": "PASSWORDS" }],
+      "users": [{ "password": "PASSWORD" }],
       "transport": {
         "type": "ws",
         "path": "SecretPATH/tr",
@@ -71,7 +71,7 @@
   "experimental": {
     "clash_api": {
       "external_controller": "127.0.0.1:61804",
-      "secret": "PASSWORDS"
+      "secret": "PASSWORD"
     }
   }
 }
