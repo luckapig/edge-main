@@ -1,46 +1,77 @@
 {
-    "log": {
-        "loglevel": "info"
-    },
-    "dns": {
-        "servers": [
-            "https+local://8.8.8.8/dns-query"
-        ]
-    },
-    "inbounds": [
-        {
-            "port": 61801,
-            "protocol": "trojan",
-            "settings": {
-                "clients": [
-                    {
-                        "password": "123pass"
-                    }
-                ]
-            },
-            "streamSettings": {
-                "network": "ws",
-                "wsSettings": {
-                    "path": "qwe"
-                }
-            },
-            "sniffing": {
-                "enabled": true,
-                "destOverride": [
-                    "http",
-                    "tls",
-                    "quic"
-                ]
-            }
-        }
+  "log": {
+    "level": "info"
+  },
+  "dns": {
+    "servers": [
+      {
+        "address": "tls://1.1.1.1",
+        "detour": "direct"
+      }
     ],
-    "outbounds": [
+    "strategy": "prefer_ipv4",
+    "disable_cache": false
+  },
+  "inbounds": [
+    {
+      "type": "vmess",
+      "listen": "::",
+      "listen_port": 61800,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "users": [
         {
-            "protocol": "freedom",
-            "tag": "direct",
-            "settings": {
-                "domainStrategy": "UseIPv4"
-            }
+          "uuid": "ad2c9acd-3afb-4fae-aff2-954c532020bd",
+          "alterId": 0
         }
+      ],
+      "transport": {
+        "type": "ws",
+        "path": "SecretPATH/vm",
+        "max_early_data": 2048,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      }
+    },
+    {
+      "type": "trojan",
+      "listen": "::",
+      "listen_port": 61801,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "users": [{ "password": "PASSWORD" }],
+      "transport": {
+        "type": "ws",
+        "path": "SecretPATH/tr",
+        "max_early_data": 2048,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "direct",
+      "tag": "direct",
+      "domain_strategy": "prefer_ipv4"
+    },
+    {
+      "type": "socks",
+      "tag": "tor",
+      "server": "127.0.0.1",
+      "server_port": 9050
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "domain_suffix": [".onion"],
+        "outbound": "tor"
+      }
     ]
+  },
+  "experimental": {
+    "clash_api": {
+      "external_controller": "127.0.0.1:61804",
+      "secret": "PASSWORD"
+    }
+  }
 }
